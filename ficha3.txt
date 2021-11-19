@@ -1,0 +1,122 @@
+#Ficha3
+
+####1.Assuma que 1% da população tem COVID. Dos que têm COVID, 70% tem um teste rápido positivo mas 10% das pessoas que não têm COVID tem um teste rápido positivo. Imprima o histograma correspondente aos positivos;
+
+~~~~
+var modelo=function(){
+  var covid = flip(0.01) 
+  var testeA= covid ? flip(0.7) : flip (0.1)
+  return testeA
+}
+viz.table(Infer(modelo))
+
+//analise de resultados:
+
+
+//Uma vez que 99% d população nao tem covid mas 10% deles vao dar positivo no teste
+//Por isso espera-se obter 99%- 99x0.1 que é aproximadamente 89.1%
+~~~~
+
+#### 2.Assuma agora que existe o teste B (em oposição ao teste A referido acima) em que 90% das pessoas com COVID tem um teste positivo enquanto que só 1% das pessoas sem COVID tem um teste positivo. Assuma também que das pessoas que ligam para o Saúde24, 80% das pessoas fizeram o teste A e as restantes fizeram o teste B. Imprima o histograma correspondente aos positivos.
+
+~~~~
+//estamos a considerar todas as pessoas ligam para a sns24
+
+var modelo=function(){
+  var covid = flip(0.01) 
+  var testeA= covid ? flip(0.7) : flip (0.1)
+  var testeB=  covid ? flip(0.9) : flip (0.01)
+  var sns = flip(0.8)? testeA : testeB
+  return sns
+}
+viz.table(Infer(modelo))
+//analise dos resultados
+//se existe agora 20% das pessoas que faz um teste com menos 1/10 probabilidade de dar
+//falso positivo entao o numero de positivos diminui 
+//(mesmo que os com covid deem mais vezes positivo porque essa contribuiçao e 100x menor)
+~~~~
+
+####3.Calcule p(COVID|positivo) para a pergunta 1 da ficha 3;
+
+~~~~
+var modelo=function(){
+  var covid = flip(0.01) 
+  var testeA= covid ? flip(0.7) : flip (0.1)
+  condition (testeA) 
+  //return {covid, testeA}
+  return covid
+}
+
+viz.table(Infer(modelo))
+
+//analise de resultados
+//como 10% da população que da negativo é muito maior que 30% da população com covid 
+//a prob de ser falso negativo e muito maior
+//ao testar as pessoas vai existir mais positivos do que a condição inicial->0.06
+~~~~
+
+#### 4.Se tiver um teste positivo para a pergunta 2 da ficha 3, calcule a probabilidade de ter COVID;
+
+~~~~
+var modelo=function(){
+  var covid = flip(0.01) 
+  var testeA= covid ? flip(0.7) : flip (0.1)
+  var testeB=  covid ? flip(0.9) : flip (0.01)
+  var sns = flip(0.8)? testeA : testeB //prob de ter um teste positivo
+  condition (sns)
+  return covid
+  //return {covid,sns} 
+}
+viz.table(Infer(modelo))
+
+//analise de resultados
+//a probabilidade de ter covid é mais baixa sabendo que deu positivo é mais baixa 
+//do que a probabilidade de covid porque a contribuiçao dos falsos positivos
+//é mais uma vez maior do que a dos que têm covid
+//para alem disso nem todos os que têm covid dão positivo, podem ser falsos negativos
+~~~~
+
+####Se tiver um teste positivo para a pergunta 2 da ficha 3, calcule a probabilidade de ter feito o teste A
+
+~~~~
+var modelo=function(){
+  var covid = flip(0.01) 
+  var testeA= covid ? flip(0.7) : flip (0.1)
+  var testeB=  covid ? flip(0.9) : flip (0.01)
+  var sns = flip(0.8)? testeA : testeB
+  condition (sns) 
+  return testeA
+  //return {testeA,covid} 
+  
+  //nao filtra os que deram negativo no testeA mas nos tbem so queremos os positivos
+}
+viz.table(Infer(modelo))
+
+//analise de resultados
+//como o testeA gera muitos mais falsos positivos que o então sabendo que deu positivo
+//aumenta a probabilidade de ter sido o testeA em relação aos 80% sem informaçao
+~~~~
+
+####Se tiver um teste positivo para a pergunta 2 da ficha 3, calcule a probabilidade de ter feito o teste A com teste positivo e COVID
+
+
+~~~~
+var modelo=function(){
+  var covid = flip(0.01) 
+  var testeA= covid ? flip(0.7) : flip (0.1)
+  var testeB=  covid ? flip(0.9) : flip (0.01)
+  var sns = flip(0.8)? testeA : testeB
+  condition (sns)
+  
+  return (testeA && covid)
+}
+viz.table(Infer(modelo))
+
+
+//analise de resultados
+//sabendo que a prob de (testeA= 0 & covid =0 é 0.02)
+// que a prob de (testeA= 1 & covid =0 é 0.89)
+// que a prob de (testeA= 0 & covid =1 é 0.006)
+//entao faz sentido que a probabilidade de (testeA e Covid) 
+//ser um valor compativel com a soma de todos os casos possiveis da expressao ser 0
+~~~~

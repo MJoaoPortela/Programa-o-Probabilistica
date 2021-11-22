@@ -1,2 +1,2 @@
 # Programa-o-Probabilistica
-bla bla bla
+Material de estudo criado ao longo do semestre

@@ -1,0 +1,245 @@
+#Ficha 1
+
+##1.Escreva funções que lancem uma moeda ao ar n vezes
+
+~~~~
+var n=10
+var moeda= repeat(n,flip)
+console.log(moeda)
+~~~~
+
+### Conte quantos dos valores são verdadeiros;
+
+~~~~
+var n=10
+var lista= repeat(n,flip)
+console.log(lista)
+
+var vdds =sum(lista)
+console.log("existem",vdds, "lançamentos verdadeiros")
+
+var falsos=n-sum(lista)
+console.log("existem",falsos, "lançamentos falsos")
+~~~~
+
+### Verifique se todos os lançamentos foram coroa;
+
+~~~~
+var n=10
+var lista= repeat(n,flip)
+console.log("os lancamentos sao", lista)
+
+
+//metodo 1
+var id= function(x) {return x}
+var all_vdds=all(id,lista)
+console.log(all_vdds)
+//metodo 2
+var alltrue= (sum(lista)==n)
+console.log(alltrue)
+
+//listas para testar
+//var listavdd =repeat(n, function() {return true})
+//var listaf=repeat(n, function() { return false; })
+~~~~
+
+### Verifique se nem todos os lançamentos tiveram o mesmo resultado;
+
+~~~~
+var n=10
+var lista= repeat(n,flip)
+console.log("os lancamentos sao", lista)
+//metodo 1
+var id= function(x) {return x}
+var all_vdds=all(id,lista)
+console.log(all_vdds)
+//metodo 2
+var allsame= (sum(lista)==n||sum(lista)==0)
+console.log(allsame)
+
+//listas para testar
+//var listavdd =repeat(n, function() {return true})
+//var listaf=repeat(n, function() { return false; })
+~~~~
+
+##2.Escreva uma função que lance 1000 vezes uma moeda ao ar, use a função repeat, e crie um histograma com as frequências;
+
+~~~~
+var n=1000
+var lancamentos= repeat(n,flip)
+viz.hist(lancamentos)
+
+//supondo que a moeda e equilibrada. Caso nao seja teria de se definir uma funçao
+//que receba o peso da moeda:
+var coin = function(prob){
+  return function () {
+    return flip(prob)
+  }
+}
+viz.hist(Infer(coin(0.3)))
+~~~~
+
+##3.Modifique a função anterior para receber a probabilidade de sair cara e experimente com vários casos possíveis;
+
+~~~~
+var n=1000
+//função geral de moeda com X prob
+// a prob recebida para o flip é a definição de sair 1, logo sair cara
+var coin = function(prob){
+  return function () {
+    return flip(prob)
+  }
+}
+
+
+var coin1=coin(0.5)
+var lancamentos1= repeat(n,coin1)
+viz.hist(lancamentos1)
+
+var coin2=coin(0.2)
+var lancamentos2= repeat(n,coin2)
+viz.table(lancamentos2)
+
+var coin3=coin(0.8)
+var lancamentos3= repeat(n,coin2)
+viz(lancamentos3)
+~~~~
+
+##Modifique a função anterior para lançar 5 moedas de cada vez e criar o histograma com o número de caras;
+
+###Use a função flip para isso;
+
+
+~~~~
+var n=1000
+//função geral de moeda com X prob
+// a prob recebida para o flip é a definição de sair 1, logo sair cara
+var coin = function(prob){
+  return function () {
+    return flip(prob)
+  }
+}
+var coin1=coin(0.5)
+var lancamentos1= repeat(n,coin1)
+
+var coin2=coin(0.2)
+var lancamentos2= repeat(n,coin2)
+
+var coin3=coin(0.4)
+var lancamentos3= repeat(n,coin3)
+
+var coin4=coin(0.1)
+var lancamentos4= repeat(n,coin4)
+
+var coin5=coin(0.9)
+var lancamentos5= repeat(n,coin5)
+viz.hist(lancamentos1,lancamentos2,lancamentos3,lancamentos4,lancamentos5)
+
+//Observacao:
+//a maioria das moedas estao viciadas para sair 0, logo coroa. 
+//Por isso espera se que a soma das varias moedas tenha uma maior 
+//probabilidade de sair 1
+~~~~
+
+###Use outra distribuição que lhe pareça mais útil
+
+~~~~
+//uma vez que a distribuicao bernoulli ja e equivalente ao flip escolhi a binomial
+
+var prob=0.5
+var coin = function(prob){
+  return function() {
+    return flip(prob)
+  }
+
+}
+var moeda= Binomial({n: 5, p: prob}) //n:numero de lançamentos, prob: peso da moeda
+moeda
+//obs: uma vez que se lanca 5 dados equilibrados espera-se 2.5 verdades, ou seja,
+//deve existir um pico no histograma entre 2 e 3
+~~~~
+
+####Porque esta distribuição?
+'The binomial distribution consists of the probabilities of each of the possible numbers of successes on N trials for independent events'.  De modo que consideramos sucesso sair cara(1) e o numero de lancamentos é 5, segundo o enunciado
+####//Binomial({p: ..., n: ...}): 
+//Distribution over the nº of successes for n independent Bernoulli({p: p}) trials.
+####(Logo caso fizessemos o mesmo para um dado faria sentido usar a distribuição multinomial)
+
+##Crie um histograma correspondente ao lançamento de um dado; Modifique o programa anterior para lançar mais do que um dado
+
+~~~~
+var n=2
+var dado = function(){
+  return randomInteger(6) +1 //adiciona se o 1 para nao ser de 0-5
+}
+
+// podiamos voltar a usar o formato var lancamentos= repeat(n,dado)
+var ndados= function(){
+  var d=repeat(n,dado)
+  return d
+}
+viz.table(Infer(ndados)) //da a probabilidade de todos os casos possiveis
+~~~~
+
+##Faça uma função para sortear uma carta;
+
+~~~~
+var n=5
+var valores = ['2_','3_','4_','5_','6_','7_','8_','9_','10_'].concat(['J_','D_','R_','A_'])
+//para distinguir rei dama valete e 10 coloca-se o valor decimal
+var ouros=['ouros','ouros','ouros','ouros','ouros','ouros','ouros','ouros','ouros','ouros','ouros','ouros','ouros'] 
+var copas=['copas','copas','copas','copas','copas','copas','copas','copas','copas','copas','copas','copas','copas']
+var espadas=['espadas','espadas','espadas','espadas','espadas','espadas','espadas','espadas','espadas','espadas','espadas','espadas','espadas']
+var paus= ['paus','paus','paus','paus','paus','paus','paus','paus','paus','paus','paus','paus','paus']
+var naipes= copas.concat(ouros).concat(espadas).concat(paus)
+var ncartas = valores.concat(valores).concat(valores).concat(valores)
+var concat = function(x, y) {return x + y}
+
+var baralho= map2(concat,ncartas, naipes).concat("Jk").concat("Jk")
+
+console.log("baralho: ",baralho)
+var carta1= function(){
+  var carta=categorical({vs:baralho})
+  remove(carta,baralho)
+  return carta
+ }
+carta1()
+~~~~
+
+###Faça uma função que sorteie uma mão de n cartas.
+
+~~~~
+var valores = ['2_','3_','4_','5_','6_','7_','8_','9_','10_'].concat(['J_','D_','R_','A_'])
+//para distinguir rei dama valete e 10 coloca-se o valor decimal
+var ouros=['ouros','ouros','ouros','ouros','ouros','ouros','ouros','ouros','ouros','ouros','ouros','ouros','ouros'] 
+var copas=['copas','copas','copas','copas','copas','copas','copas','copas','copas','copas','copas','copas','copas']
+var espadas=['espadas','espadas','espadas','espadas','espadas','espadas','espadas','espadas','espadas','espadas','espadas','espadas','espadas']
+var paus= ['paus','paus','paus','paus','paus','paus','paus','paus','paus','paus','paus','paus','paus']
+var naipes= copas.concat(ouros).concat(espadas).concat(paus)
+var ncartas = valores.concat(valores).concat(valores).concat(valores)
+var concat = function(x, y) {return x + y}
+
+var baralho= map2(concat,ncartas, naipes).concat("Jk").concat("Jk")
+
+var n=5
+var ncarta=6 //numero de cartas que falta tirar
+var mao=[]
+var lista=mapN(function(x) {return x+ 2},9)
+
+var crt= function(lista){
+  var c= categorical({vs:lista})
+  return c
+}
+
+var modelo= function(ncartas,lista,mao){
+  if (ncartas>0){
+    var carta= crt(lista)
+    mao.concat(carta)
+    var baralho= remove(carta,lista)
+    //console.log(ncartas,crt(lista),cartas)
+    {return modelo(ncartas-1,baralho,mao.concat(carta))}
+  }
+  {return mao}
+}
+console.log("a mao sorteada e:", modelo(ncarta,baralho,mao))
+~~~~
